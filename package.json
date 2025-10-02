@@ -1,0 +1,80 @@
+{
+  "name": "insight-log-agent",
+  "version": "1.0.0",
+  "description": "Universal console logging library that sends logs to remote server for Node.js, ReactJS, and React Native",
+  "main": "index.js",
+  "module": "index.esm.js",
+  "react-native": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.esm.js",
+    "index.d.ts",
+    "lib/",
+    "nodejs/",
+    "reactjs/",
+    "react-native/",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "import": "./index.esm.js",
+      "require": "./index.js"
+    },
+    "./nodejs": {
+      "import": "./nodejs/insight-logger.js",
+      "require": "./nodejs/insight-logger.js"
+    },
+    "./reactjs": {
+      "import": "./reactjs/insight-logger.js", 
+      "require": "./reactjs/insight-logger.js"
+    },
+    "./react-native": {
+      "import": "./react-native/insight-logger.js",
+      "require": "./react-native/insight-logger.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Tests not implemented yet\" && exit 0",
+    "prepublishOnly": "echo \"Ready to publish from GitHub\""
+  },
+  "keywords": [
+    "logging",
+    "console",
+    "remote-logging",
+    "nodejs",
+    "react",
+    "react-native",
+    "monitoring",
+    "debugging",
+    "tracing",
+    "insight",
+    "agent"
+  ],
+  "author": "Insight Log Agent",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tuusuario/insight-log-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tuusuario/insight-log-agent/issues"
+  },
+  "homepage": "https://github.com/tuusuario/insight-log-agent#readme",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-native": ">=0.60.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
