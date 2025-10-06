@@ -1,169 +1,169 @@
 # Insight Log Agent
 
-Librería universal de logging que hace override de `console.log` para enviar logs a un servidor remoto, disponible para múltiples frameworks con selección explícita de plataforma.
+Universal logging library that overrides `console.log` to send logs to a remote server, available for multiple frameworks with explicit platform selection.
 
-## 🚀 Instalación desde GitHub
+## 🚀 Installation from GitHub
 
 ```bash
-# Instalación directa desde GitHub
-npm install github:tuusuario/insight-log-agent
+# Direct installation from GitHub
+npm install github:yourusername/insight-log-agent
 
-# O usando la URL completa
-npm install https://github.com/tuusuario/insight-log-agent.git
+# Or using the complete URL
+npm install https://github.com/yourusername/insight-log-agent.git
 
-# Especificando branch específico
-npm install github:tuusuario/insight-log-agent#main
+# Specifying specific branch
+npm install github:yourusername/insight-log-agent#main
 ```
 
-## 📁 Estructura del Repositorio
+## 📁 Repository Structure
 
 ```
 insight-log-agent/
-├── index.js              # Entry point principal (auto-detección)
-├── index.esm.js          # Versión ESM
+├── index.js              # Main entry point (auto-detection)
+├── index.esm.js          # ESM version
 ├── index.d.ts            # TypeScript definitions
-├── nodejs/               # Implementación para Node.js
-├── reactjs/              # Implementación para ReactJS
-├── react-native/         # Implementación para React Native
-├── package.json          # Configuración NPM
-└── README.md             # Este archivo
+├── nodejs/               # Node.js implementation
+├── reactjs/              # ReactJS implementation
+├── react-native/         # React Native implementation
+├── package.json          # NPM configuration
+└── README.md             # This file
 ```
 
-## 🎯 Frameworks Soportados
+## 🎯 Supported Frameworks
 
-- **Node.js** - Aplicaciones del lado del servidor
-- **ReactJS** - Aplicaciones web React  
-- **React Native** - Aplicaciones móviles React Native
-- **Selección Explícita** - Debes elegir explícitamente la implementación de tu plataforma
+- **Node.js** - Server-side applications
+- **ReactJS** - React web applications  
+- **React Native** - React Native mobile applications
+- **Explicit Selection** - You must explicitly choose your platform implementation
 
-## 📋 Características Principales
+## 📋 Main Features
 
-- ✅ **Override no intrusivo** - Mantiene la funcionalidad original de console
-- ✅ **Stack trace automático** - Identifica automáticamente archivo y línea de código
-- ✅ **Tolerante a fallos** - Nunca rompe la aplicación, falla silenciosamente
-- ✅ **TraceID automático** - Seguimiento de logs a través de microservicios
-- ✅ **Configuración flexible** - Parámetros personalizables por log
-- ✅ **Múltiples niveles** - INFO, ERROR, WARNING, DEBUG
-- ✅ **Serialización segura** - Objetos se muestran como [Object]
+- ✅ **Non-intrusive override** - Maintains original console functionality
+- ✅ **Automatic stack trace** - Automatically identifies file and line of code
+- ✅ **Fault tolerant** - Never breaks the application, fails silently
+- ✅ **Automatic TraceID** - Log tracking across microservices
+- ✅ **Flexible configuration** - Customizable parameters per log
+- ✅ **Multiple levels** - INFO, ERROR, WARNING, DEBUG
+- ✅ **Safe serialization** - Objects are displayed as [Object]
 
-## 🛠️ Uso Básico
+## 🛠️ Basic Usage
 
-### Instalación
+### Installation
 
 ```bash
-# Instalar desde GitHub
-npm install github:tuusuario/insight-log-agent
+# Install from GitHub
+npm install github:yourusername/insight-log-agent
 ```
 
-### Selección Explícita de Plataforma
+### Explicit Platform Selection
 
-**⚠️ IMPORTANTE: Debes elegir explícitamente la implementación de tu plataforma**
+**⚠️ IMPORTANT: You must explicitly choose your platform implementation**
 
-#### Para Node.js
+#### For Node.js
 ```javascript
 const insightLogger = require('insight-log-agent/nodejs');
-// o para ES6 modules:
+// or for ES6 modules:
 // import insightLogger from 'insight-log-agent/nodejs';
 
 insightLogger.init({
-  logServerUrl: 'https://tu-servidor-logs.com',
-  service: 'mi-aplicacion-nodejs',
+  logServerUrl: 'https://your-logs-server.com',
+  service: 'my-nodejs-application',
   environment: 'prod',
-  client: 'cliente-default'
+  client: 'default-client'
 });
 ```
 
-#### Para ReactJS
+#### For ReactJS
 ```javascript
 const insightLogger = require('insight-log-agent/reactjs');
-// o para ES6 modules:
+// or for ES6 modules:
 // import insightLogger from 'insight-log-agent/reactjs';
 
 insightLogger.init({
-  logServerUrl: 'https://tu-servidor-logs.com',
-  service: 'mi-aplicacion-react',
+  logServerUrl: 'https://your-logs-server.com',
+  service: 'my-react-application',
   environment: 'prod',
-  client: 'cliente-default'
+  client: 'default-client'
 });
 ```
 
-#### Para React Native
+#### For React Native
 ```javascript
 const insightLogger = require('insight-log-agent/react-native');
-// o para ES6 modules:
+// or for ES6 modules:
 // import insightLogger from 'insight-log-agent/react-native';
 
 insightLogger.init({
-  logServerUrl: 'https://tu-servidor-logs.com',
-  service: 'mi-app-react-native',
+  logServerUrl: 'https://your-logs-server.com',
+  service: 'my-react-native-app',
   environment: 'prod',
-  client: 'cliente-mobile'
+  client: 'mobile-client'
 });
 ```
 
-### Uso Normal (Después de la Inicialización)
+### Normal Usage (After Initialization)
 
 ```javascript
-// Usar console.log normalmente - ahora enviará logs al servidor
-console.log('Mi mensaje');
+// Use console.log normally - now it will send logs to the server
+console.log('My message');
 console.error('Error occurred');
 console.warn('Warning message');
 
-// Con configuración personalizada
-console.log('Evento importante', { 
+// With custom configuration
+console.log('Important event', { 
   client: 'tenant-123', 
   level: 'ERROR' 
 });
 ```
 
-## 🔧 API del Servidor
+## 🔧 Server API
 
-La librería envía logs vía GET al endpoint `/event` con los siguientes parámetros:
+The library sends logs via GET to the `/event` endpoint with the following parameters:
 
-### Parámetros Principales
-- `client` - ID del cliente/tenant
-- `content` - Contenido del log
-- `label` - Stack trace con archivo:línea
-- `level` - Nivel del log (INFO, ERROR, WARNING, DEBUG)
-- `service` - Nombre del servicio
-- `environment` - Entorno (dev, prod, etc.)
-- `value` - TraceID para seguimiento
+### Main Parameters
+- `client` - Client/tenant ID
+- `content` - Log content
+- `label` - Stack trace with file:line
+- `level` - Log level (INFO, ERROR, WARNING, DEBUG)
+- `service` - Service name
+- `environment` - Environment (dev, prod, etc.)
+- `value` - TraceID for tracking
 
-## 🎯 Selección Explícita de Plataforma
+## 🎯 Explicit Platform Selection
 
-**No hay auto-detección** - Debes elegir explícitamente la implementación correcta:
+**No auto-detection** - You must explicitly choose the correct implementation:
 
 - **Node.js**: `require('insight-log-agent/nodejs')`
 - **ReactJS**: `require('insight-log-agent/reactjs')`  
 - **React Native**: `require('insight-log-agent/react-native')`
 
-### ¿Por qué Selección Explícita?
+### Why Explicit Selection?
 
-✅ **Control total** - Sabes exactamente qué implementación usas  
-✅ **Sin sorpresas** - No hay detección automática que pueda fallar  
-✅ **Mejor rendimiento** - Solo carga el código necesario  
-✅ **Debugging claro** - Es obvio qué plataforma estás usando  
-✅ **Compatibilidad** - Funciona en todos los bundlers y entornos  
+✅ **Total control** - You know exactly which implementation you're using  
+✅ **No surprises** - No automatic detection that could fail  
+✅ **Better performance** - Only loads necessary code  
+✅ **Clear debugging** - It's obvious which platform you're using  
+✅ **Compatibility** - Works with all bundlers and environments  
 
-### Verificación de Plataforma
+### Platform Verification
 
 ```javascript
-// Ver qué implementación estás usando
+// See which implementation you're using
 console.log('Platform:', insightLogger._platform);
 console.log('Version:', insightLogger._version);
 ```
 
-## 📖 Documentación por Framework
+## 📖 Documentation by Framework
 
-Cada implementación tiene su documentación específica:
+Each implementation has its specific documentation:
 
 - [Node.js Documentation](./nodejs/README.md)
 - [ReactJS Documentation](./reactjs/README.md)  
 - [React Native Documentation](./react-native/README.md)
 
-## 🎯 Casos de Uso
+## 🎯 Use Cases
 
-### Monitoreo de Aplicaciones
+### Application Monitoring
 ```javascript
 console.error('Database connection failed', { 
   client: 'db-monitor', 
@@ -171,7 +171,7 @@ console.error('Database connection failed', {
 });
 ```
 
-### Seguimiento de Usuario
+### User Tracking
 ```javascript
 console.log('User login', { 
   client: 'user-analytics', 
@@ -179,101 +179,94 @@ console.log('User login', {
 });
 ```
 
-### Debugging Distribuido
+### Distributed Debugging
 ```javascript
-// El mismo traceID se propaga automáticamente
+// The same traceID propagates automatically
 console.log('Processing in service A');
 // ... call to service B ...
-console.log('Processing in service B'); // Mismo traceID
+console.log('Processing in service B'); // Same traceID
 ```
 
-## 🔒 Tolerancia a Fallos
+## 🔒 Fault Tolerance
 
-- **Nunca rompe la aplicación** - Todos los errores son capturados silenciosamente
-- **Fallback robusto** - Si falla el logging remoto, console funciona normalmente
-- **Sin dependencias externas** - Código autónomo, sin librerías adicionales
-- **Sin almacenamiento local** - No asume disponibilidad de localStorage/filesystem
+- **Never breaks the application** - All errors are captured silently
+- **Robust fallback** - If remote logging fails, console works normally
+- **No external dependencies** - Self-contained code, no additional libraries
+- **No local storage** - Doesn't assume localStorage/filesystem availability
 
-## ⚙️ Configuración del Servidor
+## ⚙️ Server Configuration
 
-El servidor debe manejar GET requests al endpoint `/event` con los parámetros como query strings:
+The server must handle GET requests to the `/event` endpoint with parameters as query strings:
 
 ```
-GET /event?client=tenant-123&content=mi%20log&level=INFO&service=mi-app&environment=prod&value=trace-abc&label=app.js:42
+GET /event?client=tenant-123&content=my%20log&level=INFO&service=my-app&environment=prod&value=trace-abc&label=app.js:42
 ```
 
-## 📝 Ejemplos Incluidos
+## 📝 Included Examples
 
-Cada framework incluye archivos de ejemplo completos:
+Each framework includes complete example files:
 - `nodejs/example.js`
 - `reactjs/example.js`  
 - `react-native/example.js`
 
-## 🚀 Instalación y Configuración
+## 🚀 Installation and Configuration
 
-### 1. Crear Repositorio en GitHub
+### 1. Create GitHub Repository
 
 ```bash
-# Crear repo en GitHub y clonar
-git clone https://github.com/tuusuario/insight-log-agent.git
+# Create repo on GitHub and clone
+git clone https://github.com/yourusername/insight-log-agent.git
 cd insight-log-agent
 
-# Subir archivos
+# Upload files
 git add .
 git commit -m "Initial commit: Universal console logging library"
 git push origin main
 ```
 
-### 2. Instalar en Proyectos
+### 2. Install in Projects
 
 ```bash
-# En cualquier proyecto Node.js/React/React Native
-npm install github:tuusuario/insight-log-agent
+# In any Node.js/React/React Native project
+npm install github:yourusername/insight-log-agent
 
-# O usando URL completa
-npm install https://github.com/tuusuario/insight-log-agent.git
+# Or using complete URL
+npm install https://github.com/yourusername/insight-log-agent.git
 ```
 
-### 3. Uso Inmediato
+### 3. Immediate Usage
 
 ```javascript
-// Elegir la implementación correcta para tu plataforma
-const insightLogger = require('insight-log-agent/nodejs'); // Para Node.js
-// const insightLogger = require('insight-log-agent/reactjs'); // Para ReactJS
-// const insightLogger = require('insight-log-agent/react-native'); // Para React Native
+// Choose the correct implementation for your platform
+const insightLogger = require('insight-log-agent/nodejs'); // For Node.js
+// const insightLogger = require('insight-log-agent/reactjs'); // For ReactJS
+// const insightLogger = require('insight-log-agent/react-native'); // For React Native
 
-insightLogger.init({ logServerUrl: 'https://tu-servidor.com' });
-console.log('¡Funciona!'); // Se envía automáticamente al servidor
+insightLogger.init({ logServerUrl: 'https://your-server.com' });
+console.log('It works!'); // Automatically sent to the server
 ```
 
-## 🔧 Configuración Avanzada
+## 🔧 Advanced Configuration
 
-### Múltiples Instancias
+### Multiple Instances
 
 ```javascript
-// Usar diferentes implementaciones en el mismo proyecto si es necesario
+// Use different implementations in the same project if necessary
 const nodeLogger = require('insight-log-agent/nodejs');
 const reactLogger = require('insight-log-agent/reactjs');
 const rnLogger = require('insight-log-agent/react-native');
 ```
 
-### Verificación de Implementación
+### Implementation Verification
 
 ```javascript
-// Verificar qué implementación estás usando
+// Verify which implementation you're using
 console.log('Platform:', insightLogger._platform);
 console.log('Version:', insightLogger._version);
 
-// Si usas el entry point principal por error, verás una advertencia
+// If you use the main entry point by mistake, you'll see a warning
 if (insightLogger._warning) {
   console.warn(insightLogger._warning);
 }
 ```
 
-## 🤝 Contribución
-
-Este proyecto está diseñado para ser instalado directamente desde GitHub. Siéntete libre de hacer fork y modificar según tus necesidades.
-
-## 📄 Licencia
-
-MIT License - Código libre para uso comercial y personal.

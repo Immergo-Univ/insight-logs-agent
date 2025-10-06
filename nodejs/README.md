@@ -1,75 +1,75 @@
 # Insight Logger - Node.js
 
-Librería para override de console.log que envía logs a un servidor remoto de logging.
+Library for overriding console.log that sends logs to a remote logging server.
 
-## Instalación
+## Installation
 
-Simplemente copia el archivo `insight-logger.js` a tu proyecto Node.js.
+Simply copy the `insight-logger.js` file to your Node.js project.
 
-## Uso Básico
+## Basic Usage
 
 ```javascript
 const insightLogger = require('./insight-logger');
 
-// Inicializar la librería
+// Initialize the library
 insightLogger.init({
-  logServerUrl: 'https://tu-servidor-logs.com',
-  service: 'mi-aplicacion-nodejs',
+  logServerUrl: 'https://your-logs-server.com',
+  service: 'my-nodejs-application',
   environment: 'prod',
-  client: 'cliente-default'
+  client: 'default-client'
 });
 
-// Usar console.log normalmente - ahora enviará logs al servidor
-console.log('Mi mensaje de log');
+// Use console.log normally - now it will send logs to the server
+console.log('My log message');
 console.error('Error message');
 console.warn('Warning message');
 ```
 
-## Configuración Avanzada
+## Advanced Configuration
 
 ```javascript
-// Con parámetros personalizados
-console.log('Evento importante', { 
+// With custom parameters
+console.log('Important event', { 
   client: 'tenant-123', 
   level: 'ERROR' 
 });
 ```
 
-## Características
+## Features
 
-- ✅ Override de console.log, console.error, console.warn, console.info, console.debug
-- ✅ Mantiene funcionalidad original de console
-- ✅ Stack trace automático para identificar línea de código
-- ✅ Tolerante a fallos - nunca rompe la aplicación
-- ✅ TraceID automático para seguimiento de logs
-- ✅ Soporte para configuración por log individual
-- ✅ Serialización segura de objetos como [Object]
+- ✅ Override of console.log, console.error, console.warn, console.info, console.debug
+- ✅ Maintains original console functionality
+- ✅ Automatic stack trace to identify line of code
+- ✅ Fault tolerant - never breaks the application
+- ✅ Automatic TraceID for log tracking
+- ✅ Support for individual log configuration
+- ✅ Safe serialization of objects as [Object]
 
 ## API
 
 ### insightLogger.init(options)
 
-Inicializa el logger con la configuración especificada.
+Initializes the logger with the specified configuration.
 
-**Opciones:**
-- `logServerUrl` (requerido): URL del servidor de logs
-- `service`: Nombre del servicio
-- `environment`: Entorno (dev, prod, etc.)
-- `client`: ID del cliente por defecto
+**Options:**
+- `logServerUrl` (required): URL of the logs server
+- `service`: Service name
+- `environment`: Environment (dev, prod, etc.)
+- `client`: Default client ID
 
 ### insightLogger.restore()
 
-Restaura el comportamiento original de console.
+Restores original console behavior.
 
-## Campos Enviados
+## Sent Fields
 
-La librería envía los siguientes campos al endpoint `/event`:
+The library sends the following fields to the `/event` endpoint:
 
-- `client`: ID del cliente
-- `content`: Contenido del log
-- `label`: Stack trace con archivo y línea
-- `level`: Nivel del log (INFO, ERROR, WARNING, DEBUG)
-- `service`: Nombre del servicio
-- `environment`: Entorno
-- `value`: TraceID para seguimiento
+- `client`: Client ID
+- `content`: Log content
+- `label`: Stack trace with file and line
+- `level`: Log level (INFO, ERROR, WARNING, DEBUG)
+- `service`: Service name
+- `environment`: Environment
+- `value`: TraceID for tracking
 

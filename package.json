@@ -56,12 +56,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tuusuario/insight-log-agent.git"
+    "url": "git+https://github.com/yourusername/insight-log-agent.git"
   },
   "bugs": {
-    "url": "https://github.com/tuusuario/insight-log-agent/issues"
+    "url": "https://github.com/yourusername/insight-log-agent/issues"
   },
-  "homepage": "https://github.com/tuusuario/insight-log-agent#readme",
+  "homepage": "https://github.com/yourusername/insight-log-agent#readme",
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-native": ">=0.60.0"

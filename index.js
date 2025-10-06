@@ -2,7 +2,7 @@
  * Insight Log Agent - Main Entry Point
  * 
  * Installation from GitHub:
- * npm install github:tuusuario/insight-log-agent
+ * npm install github:yourusername/insight-log-agent
  * 
  * IMPORTANT: You must explicitly choose your platform implementation:
  * 
