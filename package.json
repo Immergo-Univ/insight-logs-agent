@@ -1,6 +1,6 @@
 {
   "name": "insight-log-agent",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Universal console logging library that sends logs to remote server for Node.js, ReactJS, and React Native",
   "main": "index.js",
   "module": "index.esm.js",

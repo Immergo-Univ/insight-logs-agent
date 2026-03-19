@@ -89,6 +89,7 @@ class InsightLogger {
       let content = '';
       let client = this.config.client;
       let level = 'INFO';
+      let correlationId = 'no-correlation';
 
       if (args.length === 0) {
         content = '';
@@ -96,12 +97,13 @@ class InsightLogger {
         content = this.stringifyContent(args[0]);
       } else if (args.length === 2) {
         content = this.stringifyContent(args[0]);
-        
-        // Check if second argument is a valid config object with client or level
+
+        // Check if second argument is a valid config object with client, level or correlationId
         if (typeof args[1] === 'object' && args[1] !== null && !Array.isArray(args[1])) {
-          if (args[1].hasOwnProperty('client') || args[1].hasOwnProperty('level')) {
+          if (args[1].hasOwnProperty('client') || args[1].hasOwnProperty('level') || args[1].hasOwnProperty('correlationId')) {
             if (args[1].client) client = args[1].client;
             if (args[1].level) level = args[1].level;
+            if (args[1].correlationId) correlationId = args[1].correlationId;
           } else {
             content += ' [Object]';
           }
@@ -113,12 +115,13 @@ class InsightLogger {
         content = args.map(arg => this.stringifyContent(arg)).join(' ');
       }
 
-      return { content, client, level };
+      return { content, client, level, correlationId };
     } catch (error) {
-      return { 
-        content: '[Error parsing arguments]', 
-        client: this.config.client, 
-        level: 'ERROR' 
+      return {
+        content: '[Error parsing arguments]',
+        client: this.config.client,
+        level: 'ERROR',
+        correlationId: 'no-correlation'
       };
     }
   }
@@ -151,7 +154,8 @@ class InsightLogger {
         level: logData.level || 'INFO',
         service: this.config.service || '',
         environment: this.config.environment || 'dev',
-        value: this.traceId
+        value: this.traceId,
+        correlationId: logData.correlationId || 'no-correlation'
       });
 
       url.search = params.toString();
@@ -197,14 +201,15 @@ class InsightLogger {
         originalMethod.apply(console, args);
 
         if (this.isInitialized) {
-          const { content, client, level: parsedLevel } = this.parseArguments(args);
+          const { content, client, level: parsedLevel, correlationId } = this.parseArguments(args);
           const label = this.getStackTrace();
 
           this.sendLog({
             content,
             client,
             level: level || parsedLevel,
-            label
+            label,
+            correlationId
           });
         }
       } catch (error) {
