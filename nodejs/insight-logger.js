@@ -155,7 +155,8 @@ class InsightLogger {
         service: this.config.service || '',
         environment: this.config.environment || 'dev',
         value: this.traceId,
-        correlationId: logData.correlationId || 'no-correlation'
+        correlationId: logData.correlationId || 'no-correlation',
+        timestamp: new Date().toISOString()
       });
 
       url.search = params.toString();
