@@ -97,6 +97,7 @@ class InsightLogger {
       let level = "INFO";
       let correlationId = "no-correlation";
       let stack = "";
+      let visitorGuid = "no-visitor";
 
       if (args.length === 0) {
         content = "";
@@ -115,12 +116,14 @@ class InsightLogger {
             args[1].hasOwnProperty("client") ||
             args[1].hasOwnProperty("level") ||
             args[1].hasOwnProperty("correlationId") ||
-            args[1].hasOwnProperty("stack")
+            args[1].hasOwnProperty("stack") ||
+            args[1].hasOwnProperty("visitorGuid")
           ) {
             if (args[1].client) client = args[1].client;
             if (args[1].level) level = args[1].level;
             if (args[1].correlationId) correlationId = args[1].correlationId;
             if (args[1].stack) stack = args[1].stack;
+            if (args[1].visitorGuid) visitorGuid = args[1].visitorGuid;
           } else {
             content += " [Object]";
           }
@@ -132,7 +135,7 @@ class InsightLogger {
         content = args.map((arg) => this.stringifyContent(arg)).join(" ");
       }
 
-      return { content, client, level, correlationId, stack };
+      return { content, client, level, correlationId, stack, visitorGuid };
     } catch (error) {
       return {
         content: "[Error parsing arguments]",
@@ -140,6 +143,7 @@ class InsightLogger {
         level: "ERROR",
         correlationId: "no-correlation",
         stack: error.stack || "",
+        visitorGuid: "no-visitor",
       };
     }
   }
@@ -176,6 +180,7 @@ class InsightLogger {
         correlationId: logData.correlationId || "no-correlation",
         timestamp: new Date().toISOString(),
         stack: logData.stack || "",
+        visitorGuid: logData.visitorGuid || "no-visitor",
       });
 
       url.search = params.toString();
@@ -226,6 +231,7 @@ class InsightLogger {
             level: parsedLevel,
             correlationId,
             stack,
+            visitorGuid,
           } = this.parseArguments(args);
           const label = this.getStackTrace();
 
@@ -236,6 +242,7 @@ class InsightLogger {
             label,
             correlationId,
             stack,
+            visitorGuid,
           });
         }
       } catch (error) {
