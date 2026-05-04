@@ -1,7 +1,7 @@
 /**
  * Insight Logger for Node.js
  * Console override library that sends logs to a remote logging service
- * 
+ *
  * Usage:
  * import insightLogger from './insight-logger.js';
  * insightLogger.init({
@@ -12,17 +12,17 @@
  * });
  */
 
-const https = require('https');
-const http = require('http');
-const { URL } = require('url');
+const https = require("https");
+const http = require("http");
+const { URL } = require("url");
 
 class InsightLogger {
   constructor() {
     this.config = {
-      logServerUrl: '',
-      service: '',
-      environment: 'dev',
-      client: 'default'
+      logServerUrl: "",
+      service: "",
+      environment: "dev",
+      client: "default",
     };
     this.traceId = this.generateTraceId();
     this.originalConsole = {
@@ -30,7 +30,7 @@ class InsightLogger {
       error: console.error,
       warn: console.warn,
       info: console.info,
-      debug: console.debug
+      debug: console.debug,
     };
     this.isInitialized = false;
   }
@@ -39,10 +39,10 @@ class InsightLogger {
     try {
       this.config = { ...this.config, ...options };
       if (!this.config.logServerUrl) {
-        console.error('InsightLogger: logServerUrl is required');
+        console.error("InsightLogger: logServerUrl is required");
         return;
       }
-      
+
       this.overrideConsole();
       this.isInitialized = true;
     } catch (error) {
@@ -52,21 +52,27 @@ class InsightLogger {
 
   generateTraceId() {
     try {
-      return 'trace-' + Math.random().toString(36).substr(2, 16) + '-' + Date.now();
+      return (
+        "trace-" + Math.random().toString(36).substr(2, 16) + "-" + Date.now()
+      );
     } catch (error) {
-      return 'trace-fallback-' + Date.now();
+      return "trace-fallback-" + Date.now();
     }
   }
 
   getStackTrace() {
     try {
       const stack = new Error().stack;
-      if (!stack) return 'unknown:0';
-      
-      const lines = stack.split('\n');
+      if (!stack) return "unknown:0";
+
+      const lines = stack.split("\n");
       // Find the first line that doesn't contain this file
       for (let i = 2; i < lines.length; i++) {
-        if (lines[i] && !lines[i].includes('insight-logger') && !lines[i].includes('at Object.log')) {
+        if (
+          lines[i] &&
+          !lines[i].includes("insight-logger") &&
+          !lines[i].includes("at Object.log")
+        ) {
           const match = lines[i].match(/at .+\((.+):(\d+):\d+\)/);
           if (match) {
             return `${match[1]}:${match[2]}`;
@@ -78,65 +84,77 @@ class InsightLogger {
           }
         }
       }
-      return 'unknown:0';
+      return "unknown:0";
     } catch (error) {
-      return 'unknown:0';
+      return "unknown:0";
     }
   }
 
   parseArguments(args) {
     try {
-      let content = '';
+      let content = "";
       let client = this.config.client;
-      let level = 'INFO';
-      let correlationId = 'no-correlation';
+      let level = "INFO";
+      let correlationId = "no-correlation";
+      let stack = "";
 
       if (args.length === 0) {
-        content = '';
+        content = "";
       } else if (args.length === 1) {
         content = this.stringifyContent(args[0]);
       } else if (args.length === 2) {
         content = this.stringifyContent(args[0]);
 
         // Check if second argument is a valid config object with client, level or correlationId
-        if (typeof args[1] === 'object' && args[1] !== null && !Array.isArray(args[1])) {
-          if (args[1].hasOwnProperty('client') || args[1].hasOwnProperty('level') || args[1].hasOwnProperty('correlationId')) {
+        if (
+          typeof args[1] === "object" &&
+          args[1] !== null &&
+          !Array.isArray(args[1])
+        ) {
+          if (
+            args[1].hasOwnProperty("client") ||
+            args[1].hasOwnProperty("level") ||
+            args[1].hasOwnProperty("correlationId") ||
+            args[1].hasOwnProperty("stack")
+          ) {
             if (args[1].client) client = args[1].client;
             if (args[1].level) level = args[1].level;
             if (args[1].correlationId) correlationId = args[1].correlationId;
+            if (args[1].stack) stack = args[1].stack;
           } else {
-            content += ' [Object]';
+            content += " [Object]";
           }
         } else {
-          content += ' ' + this.stringifyContent(args[1]);
+          content += " " + this.stringifyContent(args[1]);
         }
       } else {
         // Multiple arguments - stringify all
-        content = args.map(arg => this.stringifyContent(arg)).join(' ');
+        content = args.map((arg) => this.stringifyContent(arg)).join(" ");
       }
 
-      return { content, client, level, correlationId };
+      return { content, client, level, correlationId, stack };
     } catch (error) {
       return {
-        content: '[Error parsing arguments]',
+        content: "[Error parsing arguments]",
         client: this.config.client,
-        level: 'ERROR',
-        correlationId: 'no-correlation'
+        level: "ERROR",
+        correlationId: "no-correlation",
+        stack: error.stack || "",
       };
     }
   }
 
   stringifyContent(arg) {
     try {
-      if (typeof arg === 'string') return arg;
-      if (typeof arg === 'number') return arg.toString();
-      if (typeof arg === 'boolean') return arg.toString();
-      if (arg === null) return 'null';
-      if (arg === undefined) return 'undefined';
-      if (typeof arg === 'object') return '[Object]';
+      if (typeof arg === "string") return arg;
+      if (typeof arg === "number") return arg.toString();
+      if (typeof arg === "boolean") return arg.toString();
+      if (arg === null) return "null";
+      if (arg === undefined) return "undefined";
+      if (typeof arg === "object") return "[Object]";
       return String(arg);
     } catch (error) {
-      return '[Object]';
+      return "[Object]";
     }
   }
 
@@ -144,34 +162,35 @@ class InsightLogger {
     try {
       if (!this.isInitialized || !this.config.logServerUrl) return;
 
-      const url = new URL('/event', this.config.logServerUrl);
-      
+      const url = new URL("/event", this.config.logServerUrl);
+
       // Add all required parameters as query params
       const params = new URLSearchParams({
         client: logData.client || this.config.client,
-        content: logData.content || '',
-        label: logData.label || '',
-        level: logData.level || 'INFO',
-        service: this.config.service || '',
-        environment: this.config.environment || 'dev',
+        content: logData.content || "",
+        label: logData.label || "",
+        level: logData.level || "INFO",
+        service: this.config.service || "",
+        environment: this.config.environment || "dev",
         value: this.traceId,
-        correlationId: logData.correlationId || 'no-correlation',
-        timestamp: new Date().toISOString()
+        correlationId: logData.correlationId || "no-correlation",
+        timestamp: new Date().toISOString(),
+        stack: logData.stack || "",
       });
 
       url.search = params.toString();
 
-      const protocol = url.protocol === 'https:' ? https : http;
+      const protocol = url.protocol === "https:" ? https : http;
       const options = {
         hostname: url.hostname,
-        port: url.port || (url.protocol === 'https:' ? 443 : 80),
+        port: url.port || (url.protocol === "https:" ? 443 : 80),
         path: url.pathname + url.search,
-        method: 'GET',
+        method: "GET",
         timeout: 5000,
         headers: {
-          'User-Agent': 'InsightLogger/1.0',
-          'Accept': 'application/json'
-        }
+          "User-Agent": "InsightLogger/1.0",
+          Accept: "application/json",
+        },
       };
 
       const req = protocol.request(options, (res) => {
@@ -179,17 +198,16 @@ class InsightLogger {
         res.resume();
       });
 
-      req.on('error', () => {
+      req.on("error", () => {
         // Fail silently to avoid breaking the application
       });
 
-      req.on('timeout', () => {
+      req.on("timeout", () => {
         req.destroy();
       });
 
       req.setTimeout(5000);
       req.end();
-
     } catch (error) {
       // Fail silently to avoid breaking the application
     }
@@ -202,7 +220,13 @@ class InsightLogger {
         originalMethod.apply(console, args);
 
         if (this.isInitialized) {
-          const { content, client, level: parsedLevel, correlationId } = this.parseArguments(args);
+          const {
+            content,
+            client,
+            level: parsedLevel,
+            correlationId,
+            stack,
+          } = this.parseArguments(args);
           const label = this.getStackTrace();
 
           this.sendLog({
@@ -210,7 +234,8 @@ class InsightLogger {
             client,
             level: level || parsedLevel,
             label,
-            correlationId
+            correlationId,
+            stack,
           });
         }
       } catch (error) {
@@ -226,11 +251,26 @@ class InsightLogger {
 
   overrideConsole() {
     try {
-      console.log = this.createConsoleOverride(this.originalConsole.log, 'INFO');
-      console.error = this.createConsoleOverride(this.originalConsole.error, 'ERROR');
-      console.warn = this.createConsoleOverride(this.originalConsole.warn, 'WARNING');
-      console.info = this.createConsoleOverride(this.originalConsole.info, 'INFO');
-      console.debug = this.createConsoleOverride(this.originalConsole.debug, 'DEBUG');
+      console.log = this.createConsoleOverride(
+        this.originalConsole.log,
+        "INFO",
+      );
+      console.error = this.createConsoleOverride(
+        this.originalConsole.error,
+        "ERROR",
+      );
+      console.warn = this.createConsoleOverride(
+        this.originalConsole.warn,
+        "WARNING",
+      );
+      console.info = this.createConsoleOverride(
+        this.originalConsole.info,
+        "INFO",
+      );
+      console.debug = this.createConsoleOverride(
+        this.originalConsole.debug,
+        "DEBUG",
+      );
     } catch (error) {
       // Fail silently to avoid breaking the application
     }
@@ -254,4 +294,3 @@ class InsightLogger {
 const insightLogger = new InsightLogger();
 
 module.exports = insightLogger;
-
